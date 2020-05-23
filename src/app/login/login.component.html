@@ -1,0 +1,23 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+
+  <div>
+    <label for="email">
+      Email
+    </label>
+    <input id="email" type="email" formControlName="email">
+  </div>
+
+  <div>
+    <label for="password">
+      Password
+    </label>
+    <input id="password" type="password" formControlName="password">
+  </div>
+
+  <button class="button" type="submit">Login</button>
+
+</form>
+
+<div *ngIf="user | async">
+  <p>{{ user.fullName | async }}</p>
+</div>
