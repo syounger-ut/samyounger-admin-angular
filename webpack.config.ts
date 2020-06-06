@@ -21,15 +21,20 @@ module.exports = {
         use: 'html-loader'
       },
       {
-        test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader']
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
 
       // workaround for warning: System.import() is deprecated and will be removed soon. Use import() instead.
       {
         test: /[\/\\]@angular[\/\\].+\.js$/,
         parser: { system: true }
-      }
+      },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
     ]
   },
   plugins: [
