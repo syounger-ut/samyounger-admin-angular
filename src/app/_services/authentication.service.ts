@@ -21,12 +21,11 @@ export class AuthenticationService {
 
   login(email, password) {
     return this.http.post<any>(`${config.apiUrl}/login`, { email, password })
-    .pipe(map(user => {
-      console.log(user);
+    .pipe(map(res => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
-      // localStorage.setItem('currentUser', JSON.stringify(user));
-      // this.currentUserSubject.next(user);
-      // return user;
+      localStorage.setItem('currentUser', JSON.stringify(res.token));
+      this.currentUserSubject.next(res.user);
+      return res.user;
     }));
   }
 
