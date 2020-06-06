@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private userService: UserService
-    ) {
+  ) {
       this.currentUser = this.authenticationService.currentUserValue;
   }
 
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   }
 
   private loadAllUsers() {
-    this.userService.getAll()
+    this.userService.getMe()
     .pipe(first())
     .subscribe(users => this.users = users);
   }

@@ -14,7 +14,7 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 let users = JSON.parse(localStorage.getItem('users')) || [];
 
 @Injectable()
-export class FakeBackendInterceptor implements HttpInterceptor {
+export class YoungerAPIInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body } = request;
 
@@ -27,12 +27,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     function handleRoute() {
       switch (true) {
-        case url.endsWith('/users/authenticate') && method === 'POST':
+        case url.endsWith('/login') && method === 'POST':
         return authenticate();
-        case url.endsWith('/users/register') && method === 'POST':
+        case url.endsWith('/register') && method === 'POST':
         return register();
-        case url.endsWith('/users') && method === 'GET':
-        return getUsers();
         case url.match(/\/users\/\d+$/) && method === 'DELETE':
         return deleteUser();
         default:
@@ -44,23 +42,27 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     // route functions
 
     function authenticate() {
-      const { username, password } = body;
-      const user = users.find(x => x.username === username && x.password === password);
-      if (!user) return error('Username or password is incorrect');
+      console.log("HERE")
+
+      const { email, password } = body;
+      const user = users.find(x => x.email === email && x.password === password);
+      if (!user) return error('email or password is incorrect');
       return ok({
         id: user.id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        token: 'fake-jwt-token'
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        fullName: user.full_name,
+        token: user.token,
+        avatarUrl: user.avatar_url,
       })
     }
 
     function register() {
       const user = body
 
-      if (users.find(x => x.username === user.username)) {
-        return error('Username "' + user.username + '" is already taken')
+      if (users.find(x => x.email === user.email)) {
+        return error('email "' + user.email + '" is already taken')
       }
 
       user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
@@ -68,11 +70,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       localStorage.setItem('users', JSON.stringify(users));
 
       return ok();
-    }
-
-    function getUsers() {
-      if (!isLoggedIn()) return unauthorized();
-      return ok(users);
     }
 
     function deleteUser() {
@@ -108,9 +105,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 }
 
-export const fakeBackendProvider = {
+export const youngerApiProvider = {
   // use fake backend in place of Http service for backend-less development
   provide: HTTP_INTERCEPTORS,
-  useClass: FakeBackendInterceptor,
+  useClass: YoungerAPIInterceptor,
   multi: true
 };
