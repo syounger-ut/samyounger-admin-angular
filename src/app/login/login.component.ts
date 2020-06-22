@@ -21,10 +21,7 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private alertService: AlertService
     ) {
-      // redirect to home if already logged in
-      if (this.authenticationService.currentUserValue) {
-        this.router.navigate(['/']);
-    }
+    this.router.navigate(['/']);
   }
 
   ngOnInit() {
@@ -52,15 +49,14 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.email.value, this.f.password.value)
-    .pipe(first())
-    .subscribe(
-      data => {
+    this.authenticationService.login(this.f.email.value, this.f.password.value).subscribe(
+      _res => {
         this.router.navigate([this.returnUrl]);
       },
-      error => {
-        this.alertService.error(error);
+      err => {
+        this.alertService.error(err);
         this.loading = false;
-    });
+      },
+    )
   }
 }

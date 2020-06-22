@@ -39,12 +39,6 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({ template: './src/index.html' }),
-    new webpack.DefinePlugin({
-      // global app config object
-      config: JSON.stringify({
-        apiUrl: 'http://localhost:3000'
-      })
-    }),
 
     // workaround for warning: Critical dependency: the request of a dependency is an expression
     new webpack.ContextReplacementPlugin(
