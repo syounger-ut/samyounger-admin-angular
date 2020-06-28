@@ -11,12 +11,12 @@ import '@/_content/app.scss';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  title = 'samyounger-admin';
-  currentUser: User;
+  public title = 'samyounger-admin';
+  public currentUser: User;
 
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
   ) { }
 
   logout() {

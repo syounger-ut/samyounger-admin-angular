@@ -1,8 +1,20 @@
 // Core
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '@/_services';
+import { User } from '@/_models/user.model';
 
 @Component({
-  templateUrl: 'home.component.html'
+  templateUrl: 'home.component.html',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  public user: User;
+
+  constructor(private userService: UserService) {
+  }
+
+  ngOnInit(): void {
+    this.userService.userChanged$.subscribe(user => {
+      this.user = user;
+    });
+  }
 }

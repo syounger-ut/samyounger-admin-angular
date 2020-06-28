@@ -1,16 +1,16 @@
 // Core
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '@environments/environment';
 
 // Models
 import { User } from '@/_models';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  constructor(private http: HttpClient) { }
+  public user: User = new User({});
+  public userChanged$ = new BehaviorSubject<User>(this.user);
 
-  getMe() {
-    return this.http.get<User>(`${environment.apiUrl}/users/me`);
+  public setUser(user: User): void {
+    this.userChanged$.next(user);
   }
 }
