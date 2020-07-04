@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, AuthenticationService } from '@/_services';
 
 @Component({
+  selector: 'app-login',
   templateUrl: 'login.component.html'
 })
 export class LoginComponent implements OnInit {

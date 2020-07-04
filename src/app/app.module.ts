@@ -5,12 +5,20 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { appRoutingModule } from './app.routing';
 import { JwtInterceptor, ErrorInterceptor } from '@/_helpers';
-import { AppComponent } from '@/app.component';
-import { HomeComponent } from '@/home/home.component';
-import { LoginComponent } from '@/login/login.component';
-import { RegisterComponent } from '@/register/register.component';
+
+// Components
 import { AlertComponent } from '@/_components';
-import { UserService, AuthenticationService } from './_services';
+import { AppComponent } from '@/app.component';
+import { LoginComponent } from '@/login/login.component';
+import { HomeComponent } from '@/home/home.component';
+import { RegisterComponent } from '@/register/register.component';
+import { HeaderComponent } from '@/header/header.component';
+
+// Services
+import {
+  UserService,
+  AuthenticationService,
+} from './_services';
 
 @NgModule({
   imports: [
@@ -21,10 +29,11 @@ import { UserService, AuthenticationService } from './_services';
   ],
   declarations: [
     AppComponent,
+    AlertComponent,
+    HeaderComponent,
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    AlertComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
