@@ -7,5 +7,5 @@ import '@/_content/app.scss';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-
+  public title = 'samyounger-admin';
 }
