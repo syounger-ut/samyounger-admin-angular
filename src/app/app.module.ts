@@ -3,22 +3,24 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { appRoutingModule } from './app.routing';
-import { JwtInterceptor, ErrorInterceptor } from '@/_helpers';
+import { JwtInterceptor, ErrorInterceptor } from '@root/_helpers';
 
 // Components
-import { AlertComponent } from '@/_components';
-import { AppComponent } from '@/app.component';
-import { LoginComponent } from '@/login/login.component';
-import { HomeComponent } from '@/home/home.component';
-import { RegisterComponent } from '@/register/register.component';
-import { HeaderComponent } from '@/header/header.component';
+import { AlertComponent } from '@root/_components';
+import { AppComponent } from '@root/app.component';
+import { LoginComponent } from '@root/login/login.component';
+import { HomeComponent } from '@root/home/home.component';
+import { RegisterComponent } from '@root/register/register.component';
+import { HeaderComponent } from '@root/header/header.component';
 
 // Services
 import {
   UserService,
   AuthenticationService,
 } from './_services';
+
+// Routes
+import { appRoutingModule } from './app.routing';
 
 @NgModule({
   imports: [

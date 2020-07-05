@@ -7,7 +7,7 @@ import { environment } from '@environments/environment';
 // State management
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from '@/_models';
+import { User } from '@root/_models';
 import { UserService } from './user.service';
 
 interface AuthenticationResponse {
@@ -32,6 +32,17 @@ export class AuthenticationService {
         this.onSuccessfulAuthResponse(res.token, res.user);
         return res.user;
       }));
+  }
+
+  public getUser(): Observable<User> {
+    return this.http
+      .get(`${environment.apiUrl}/users/me`)
+      .pipe(map(
+        (res: User) => {
+          this.userService.setUser(res);
+          return res;
+        }
+      ));
   }
 
   public login(email: string, password: string): Observable<User> {

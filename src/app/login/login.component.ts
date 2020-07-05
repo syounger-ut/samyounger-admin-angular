@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 // Services
-import { AlertService, AuthenticationService } from '@/_services';
+import { AlertService, AuthenticationService } from '@root/_services';
 
 @Component({
   selector: 'app-login',
