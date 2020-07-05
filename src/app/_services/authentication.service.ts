@@ -34,6 +34,17 @@ export class AuthenticationService {
       }));
   }
 
+  public getUser(): Observable<User> {
+    return this.http
+      .get(`${environment.apiUrl}/users/me`)
+      .pipe(map(
+        (res: User) => {
+          this.userService.setUser(res);
+          return res;
+        }
+      ));
+  }
+
   public login(email: string, password: string): Observable<User> {
     return this.http
       .post<AuthenticationResponse>(`${environment.apiUrl}/login`, { email, password })
