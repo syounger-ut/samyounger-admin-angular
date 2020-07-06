@@ -7,7 +7,7 @@ import { environment } from '@environments/environment';
 // State management
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from '@/_models';
+import { User } from '@root/_models';
 import { UserService } from './user.service';
 
 interface AuthenticationResponse {

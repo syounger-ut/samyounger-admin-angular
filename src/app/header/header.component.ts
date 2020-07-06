@@ -2,7 +2,10 @@ import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 // Services
-import { AuthenticationService } from '@/_services';
+import { AuthenticationService } from '@root/_services';
+
+// Models
+import { User } from '@root/_models';
 
 // Models
 import { User } from '@/_models';

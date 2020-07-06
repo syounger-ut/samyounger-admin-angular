@@ -7,7 +7,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
-      '@': path.resolve(__dirname, 'src/app/'),
+      '@root': path.resolve(__dirname, 'src/app/'),
     }
   },
   module: {
