@@ -2,17 +2,11 @@ import { Component } from '@angular/core';
 
 import '@root/_content/app.scss';
 
-// Services
-import { AuthenticationService } from './_services';
-
 // Models
-import { User } from './_models';
+import { User } from '@root/_models';
 
 // Services
-import { AuthenticationService } from './_services';
-
-// Models
-import { User } from './_models';
+import { AuthenticationService } from '@root/_services';
 
 @Component({
   selector: 'app',

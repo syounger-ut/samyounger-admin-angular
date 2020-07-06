@@ -7,9 +7,6 @@ import { AuthenticationService } from '@root/_services';
 // Models
 import { User } from '@root/_models';
 
-// Models
-import { User } from '@/_models';
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
