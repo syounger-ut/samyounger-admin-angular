@@ -1,27 +1,41 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Shallow } from 'shallow-render';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { Routes, RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { APP_BASE_HREF } from '@angular/common';
 
 import { LoginComponent } from './login.component';
+import { AlertService } from '@root/_services';
+
+const routes: Routes = [{ path: 'home', component: class DummyComponent {} }];
 
 describe('LoginComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        FormsModule,
-        HttpClientTestingModule,
-      ],
-      declarations: [
-        LoginComponent,
-      ],
-    }).compileComponents();
-  }));
+  let shallow: Shallow<LoginComponent>;
 
-  it('should render the component', () => {
-    const fixture = TestBed.createComponent(LoginComponent);
-    const loginComponent = fixture.componentInstance;
-    expect(loginComponent).toBeTruthy();
+  @NgModule({
+    imports: [
+      FormsModule,
+      HttpClientModule,
+      RouterModule.forRoot(routes)
+    ],
+    declarations: [LoginComponent],
+    providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
+  })
+  class TestingModule {}
+
+  beforeEach(() => {
+    shallow = new Shallow(LoginComponent, TestingModule).replaceModule(
+      RouterModule,
+      RouterTestingModule.withRoutes(routes)
+    );
+    shallow.mock(AlertService, { clear: () => true,  })
+  });
+
+  it('renders the component', async () => {
+    const { find } = await shallow.render();
+
+    expect(find('form')).toBeTruthy();
   });
 });

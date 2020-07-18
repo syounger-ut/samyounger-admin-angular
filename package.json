@@ -46,6 +46,7 @@
     "jest-preset-angular": "^8.2.1",
     "sass": "^1.26.8",
     "sass-loader": "^8.0.2",
+    "shallow-render": "^10.0.1",
     "source-map-loader": "^1.0.0",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
