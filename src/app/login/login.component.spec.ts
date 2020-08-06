@@ -7,13 +7,18 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { LoginComponent } from './login.component';
-import { AlertService } from '@root/_services';
+import { AlertService, AuthenticationService } from '@root/_services';
 import { ComponentFixture } from '@angular/core/testing';
+import { MockAuthenticationService } from '@root/__mocks__/authentication.mock.service';
 
 const routes: Routes = [{ path: 'home', component: class DummyComponent {} }];
+const mockAuthenticationService = MockAuthenticationService();
 
 describe('LoginComponent', () => {
   let shallow: Shallow<LoginComponent>;
+  let fixture: ComponentFixture<LoginComponent[]>;
+  let instance: LoginComponent;
+  let find: any;
 
   @NgModule({
     imports: [
@@ -22,7 +27,10 @@ describe('LoginComponent', () => {
       RouterModule.forRoot(routes)
     ],
     declarations: [LoginComponent],
-    providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
+    providers: [
+      { provide: APP_BASE_HREF, useValue: '/' },
+      { provide: AuthenticationService, useValue: mockAuthenticationService },
+    ],
   })
   class TestingModule {}
 
@@ -31,11 +39,16 @@ describe('LoginComponent', () => {
       RouterModule,
       RouterTestingModule.withRoutes(routes)
     );
-    shallow.mock(AlertService, { clear: () => true,  })
+    shallow.mock(AlertService, { clear: () => true });
+    shallow.dontMock(AuthenticationService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('renders the component', async () => {
-    const { find } = await shallow.render();
+    ({ find } = await shallow.render());
 
     expect(find('form')).toBeTruthy();
   });
@@ -43,7 +56,7 @@ describe('LoginComponent', () => {
   describe('inputs', () => {
     const detectInputChanges = (inputName: string, expectedValue: string): void => {
       it(`updates the ${inputName} property when the value changes`, async () => {
-        const { find, instance, fixture } = await shallow.render();
+        ({find, instance, fixture } = await shallow.render());
         const emailInput = find(`#${inputName}`);
 
         emailInput.nativeElement.value = expectedValue;
@@ -60,16 +73,19 @@ describe('LoginComponent', () => {
   });
 
   describe('validations', () => {
-    let fixture: ComponentFixture<LoginComponent>;
-    let instance: LoginComponent;
     let formControls: any;
     let input: any;
-    let find: any;
 
     beforeEach(async () => {
       ({ find, fixture, instance } = await shallow.render());
 
       formControls = instance.form.controls;
+    });
+
+    it('is a valid form with a valid email and password', async () => {
+      formControls['email'].setValue('foo@bar.com');
+      formControls['password'].setValue('password');
+      expect(instance.form.valid).toBeTruthy();
     });
 
     describe('email', () => {
@@ -157,12 +173,27 @@ describe('LoginComponent', () => {
   });
 
   describe('submit', () => {
-    it('submits the email and password to the authenticationService', () => {
+    let formControls: any;
 
+    beforeEach(async () => {
+      ({ instance, find } = await shallow.render());
+      formControls = instance.form.controls;
+    });
+
+    it('submits the email and password to the authenticationService', async () => {
+      formControls['email'].setValue('foo@bar.com');
+      formControls['password'].setValue('password');
+
+      find('form').triggerEventHandler('submit', {});
+      expect(mockAuthenticationService.login).toHaveBeenCalled();
     });
 
     it("doesn't submit the form if the form is invalid", () => {
+      formControls['email'].setValue('invalidEmail');
+      formControls['password'].setValue('');
 
+      find('form').triggerEventHandler('submit', {});
+      expect(mockAuthenticationService.login).toHaveBeenCalledTimes(0);
     });
 
     it('resets the alerts on submit', () => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private alertService: AlertService,
+    private ngZone: NgZone,
   ) {}
 
   ngOnInit() {
@@ -33,11 +34,10 @@ export class LoginComponent implements OnInit {
 
     const email = this.form.value.email;
     const password = this.form.value.password;
-
-    // reset alerts on submit
+    // // reset alerts on submit
     this.alertService.clear();
 
-    // stop here if form is invalid
+    // // stop here if form is invalid
     if (this.form.invalid) {
       return;
     }
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.authenticationService.login(email, password).subscribe(
       _res => {
-        this.router.navigate([this.returnUrl]);
+        this.ngZone.run(() => this.router.navigate([this.returnUrl]));
       },
       err => {
         this.alertService.error(err);
