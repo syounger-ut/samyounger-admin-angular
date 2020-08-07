@@ -10,9 +10,11 @@ import { LoginComponent } from './login.component';
 import { AlertService, AuthenticationService } from '@root/_services';
 import { ComponentFixture } from '@angular/core/testing';
 import { MockAuthenticationService } from '@root/__mocks__/authentication.mock.service';
+import { MockAlertService } from '@root/__mocks__/alert.mock.service';
 
 const routes: Routes = [{ path: 'home', component: class DummyComponent {} }];
 const mockAuthenticationService = MockAuthenticationService();
+const mockAlertService = MockAlertService();
 
 describe('LoginComponent', () => {
   let shallow: Shallow<LoginComponent>;
@@ -30,6 +32,7 @@ describe('LoginComponent', () => {
     providers: [
       { provide: APP_BASE_HREF, useValue: '/' },
       { provide: AuthenticationService, useValue: mockAuthenticationService },
+      { provide: AlertService, useValue: mockAlertService },
     ],
   })
   class TestingModule {}
@@ -39,8 +42,10 @@ describe('LoginComponent', () => {
       RouterModule,
       RouterTestingModule.withRoutes(routes)
     );
-    shallow.mock(AlertService, { clear: () => true });
-    shallow.dontMock(AuthenticationService);
+    shallow.dontMock(
+      AuthenticationService,
+      AlertService,
+    );
   });
 
   afterEach(() => {
@@ -172,7 +177,7 @@ describe('LoginComponent', () => {
     });
   });
 
-  describe('submit', () => {
+  describe('#submit', () => {
     let formControls: any;
 
     beforeEach(async () => {
@@ -180,53 +185,50 @@ describe('LoginComponent', () => {
       formControls = instance.form.controls;
     });
 
-    it('submits the email and password to the authenticationService', async () => {
-      formControls['email'].setValue('foo@bar.com');
-      formControls['password'].setValue('password');
-
+    it('resets the alerts', () => {
       find('form').triggerEventHandler('submit', {});
-      expect(mockAuthenticationService.login).toHaveBeenCalled();
+      expect(mockAlertService.clear).toHaveBeenCalled();
     });
 
-    it("doesn't submit the form if the form is invalid", () => {
-      formControls['email'].setValue('invalidEmail');
-      formControls['password'].setValue('');
-
+    it('updates the submitted instance variable to true', () => {
+      expect(instance.submitted).toBeFalsy();
       find('form').triggerEventHandler('submit', {});
-      expect(mockAuthenticationService.login).toHaveBeenCalledTimes(0);
+      expect(instance.submitted).toBeTruthy();
     });
 
-    it('resets the alerts on submit', () => {
-
-    });
-
-    it('updates the submitted value to true', () => {
-
-    });
-
-    it('updates the loading value to true', () => {
-
-    });
-
-    describe('onSuccessful authentication', () => {
-      it('it navigates to the returnUrl', () => {
-
+    describe('invalid form attributes', () => {
+      beforeEach(() => {
+        formControls['email'].setValue('invalidEmail');
+        formControls['password'].setValue('');
       });
 
-      describe('no returnUrl param', () => {
-        it('it goes to the home page if no returnUrl', () => {
+      it('does not update the loading value to true', () => {
+        expect(instance.loading).toBeFalsy();
+        find('form').triggerEventHandler('submit', {});
+        expect(instance.loading).toBeFalsy();
+      });
 
-        });
+      it("doesn't submit the form", () => {
+        find('form').triggerEventHandler('submit', {});
+        expect(mockAuthenticationService.login).toHaveBeenCalledTimes(0);
       });
     });
 
-    describe('onError', () => {
-      it('sends the error to the alertService on error', () => {
-
+    describe('valid form attributes', () => {
+      beforeEach(() => {
+        formControls['email'].setValue('foo@bar.com');
+        formControls['password'].setValue('password');
       });
 
-      it('updates the loading value to false', () => {
+      it('submits the email and password to the authenticationService', async () => {
+        find('form').triggerEventHandler('submit', {});
+        expect(mockAuthenticationService.login).toHaveBeenCalled();
+      });
 
+      it('updates the loading value to true', () => {
+        expect(instance.loading).toBeFalsy();
+        find('form').triggerEventHandler('submit', {});
+        expect(instance.loading).toBeTruthy();
       });
     });
   });
