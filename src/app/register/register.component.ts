@@ -10,31 +10,30 @@ import { AlertService, AuthenticationService } from '@root/_services';
   templateUrl: 'register.component.html'
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
-  loading = false;
-  submitted = false;
+  public registerForm: FormGroup;
+  public loading: boolean = false;
+  public submitted: boolean = false;
 
-  constructor(
+  public constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private authenticationService: AuthenticationService,
     private alertService: AlertService
     ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      password_confirmation: ['', Validators.required],
     });
   }
 
   // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
 
-  onSubmit() {
+  public onSubmit(): void {
     this.submitted = true;
 
     // reset alerts on submit
@@ -51,7 +50,7 @@ export class RegisterComponent implements OnInit {
     .subscribe(
       data => {
         this.alertService.success('Registration successful', true);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error => {
         this.alertService.error(error);
