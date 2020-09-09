@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@environments/*": ["environments/*"],
-      "@root/*": ["app/*"]
+      "@root/*": ["app/*"],
     }
   },
   "angularCompilerOptions": {

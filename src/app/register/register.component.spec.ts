@@ -12,8 +12,10 @@ import { ComponentFixture } from '@angular/core/testing';
 import { MockAuthenticationService } from '@root/__mocks__/authentication.mock.service';
 import { MockAlertService } from '@root/__mocks__/alert.mock.service';
 import { QueryMatch } from 'shallow-render/dist/lib/models/query-match';
+// import { of, Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 
-const routes: Routes = [{ path: 'home', component: class DummyComponent {} }];
+const routes: Routes = [{ path: 'register', component: class DummyComponent {} }];
 const mockAuthenticationService = MockAuthenticationService();
 const mockAlertService = MockAlertService();
 
@@ -62,7 +64,7 @@ describe('RegisterComponent', () => {
 
   describe('validation', () => {
     beforeEach(async () => {
-      ({ find, instance } = await shallow.render())
+      ({ find, instance } = await shallow.render());
       instance.registerForm.setValue({
         first_name: 'foo',
         last_name: 'bar',
@@ -107,6 +109,100 @@ describe('RegisterComponent', () => {
 
       it('must be 6 or more chars', () => {
         fieldValidation('password', '12345', '123456');
+      });
+    });
+  });
+
+  describe('#onSubmit', () => {
+    beforeEach(async () => {
+      ({ find, instance } = await shallow.render());
+      instance.registerForm.setValue({
+        first_name: 'foo',
+        last_name: 'bar',
+        email: 'foo@bar.com',
+        password: 'password',
+      });
+    });
+
+    it('changes submitted to true', () => {
+      expect(instance.submitted).toBeFalsy();
+      instance.onSubmit();
+      expect(instance.submitted).toBeTruthy();
+    });
+
+    it('clears alerts', () => {
+      instance.onSubmit();
+      expect(mockAlertService.clear).toHaveBeenCalled();
+    });
+
+    it('sets loading to true', () => {
+      expect(instance.loading).toBeFalsy();
+      instance.onSubmit();
+      expect(instance.loading).toBeTruthy();
+    });
+
+    it('sends the form to the registerService', () => {
+      instance.onSubmit();
+      expect(
+        mockAuthenticationService.register,
+      ).toHaveBeenCalledWith(
+        instance.registerForm.value,
+      );
+    });
+
+    describe('on success', () => {
+      it('calls the AlertService#success', () => {
+        instance.onSubmit();
+        expect(
+          mockAlertService.success,
+        ).toHaveBeenCalledWith(
+          'Registration successful', true,
+        );
+      });
+    });
+
+    describe('on error', () => {
+      const error = new Error('Auth Svs Error Msg')
+      beforeEach(() => {
+        jest.spyOn(
+          mockAuthenticationService, 'register',
+        ).mockReturnValue(
+          throwError(error)
+        );
+      });
+
+      it('calls the AlertService#error', () => {
+        instance.onSubmit();
+        expect(
+          mockAlertService.error,
+        ).toHaveBeenCalledWith(error);
+      });
+
+      it('sets loading to false', () => {
+        expect(instance.loading).toBeFalsy();
+        instance.onSubmit();
+        expect(instance.loading).toBeFalsy();
+      });
+    });
+
+    describe('the form is invalid', () => {
+      beforeEach(() => {
+        instance.registerForm.setValue({
+          first_name: '',
+          last_name: '',
+          email: '',
+          password: '',
+        });
+      });
+
+      it('does not submit the form', () => {
+        instance.onSubmit();
+        expect(mockAuthenticationService.register).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not set loading to true', () => {
+        instance.onSubmit();
+        expect(instance.loading).toBeFalsy();
       });
     });
   });

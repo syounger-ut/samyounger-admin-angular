@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -18,7 +18,8 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private ngZone: NgZone,
     ) {}
 
   public ngOnInit(): void {
@@ -48,9 +49,9 @@ export class RegisterComponent implements OnInit {
     this.authenticationService.register(this.registerForm.value)
     .pipe(first())
     .subscribe(
-      data => {
+      _data => {
         this.alertService.success('Registration successful', true);
-        this.router.navigate(['/']);
+        this.ngZone.run(() => this.router.navigate(['/']));
       },
       error => {
         this.alertService.error(error);

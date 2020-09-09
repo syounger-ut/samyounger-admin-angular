@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 interface MockAlertService {
   error: () => void;
   clear: () => void;
+  success: () => void;
 }
 
 export const MockAlertService = (): MockAlertService => {
@@ -12,6 +13,9 @@ export const MockAlertService = (): MockAlertService => {
     }),
     clear: jest.fn(() => {
       return of({});
-    })
+    }),
+    success: jest.fn(() => {
+      return of({});
+    }),
   }
 }
