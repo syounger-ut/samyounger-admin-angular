@@ -1,17 +1,19 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AlertService, AuthenticationService } from '@root/_services';
 
 @Component({
   selector: 'app-register',
-  templateUrl: 'register.component.html'
+  templateUrl: 'register.component.html',
 })
 export class RegisterComponent implements OnInit {
   public registerForm: FormGroup;
+
   public loading: boolean = false;
+
   public submitted: boolean = false;
 
   public constructor(
@@ -32,7 +34,9 @@ export class RegisterComponent implements OnInit {
   }
 
   // convenience getter for easy access to form fields
-  get f() { return this.registerForm.controls; }
+  public get f(): Record<string, AbstractControl> {
+    return this.registerForm.controls;
+  }
 
   public onSubmit(): void {
     this.submitted = true;
@@ -46,16 +50,16 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.register(this.registerForm.value)
-    .pipe(first())
-    .subscribe(
-      _data => {
-        this.alertService.success('Registration successful', true);
-        this.ngZone.run(() => this.router.navigate(['/']));
-      },
-      error => {
-        this.alertService.error(error);
-        this.loading = false;
-    });
+    this.authenticationService.register$(this.registerForm.value)
+      .pipe(first())
+      .subscribe(
+        _data => {
+          this.alertService.success('Registration successful', true);
+          this.ngZone.run(() => this.router.navigate(['/']));
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+      });
   }
 }

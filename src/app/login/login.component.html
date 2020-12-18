@@ -1,38 +1,40 @@
-<h2>Login</h2>
-<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-	<div class="form-group">
-		<label for="email">Email</label>
-		<input
-			id="email"
-			type="email"
-			name="email"
-			class="form-control"
-			ngModel
-			email
-			required
-			#email="ngModel"
-			/>
-		<p class="form-text text-muted" *ngIf="!email.valid && email.touched">Email is required</p>
-	</div>
-	<div class="form-group">
-		<label for="password">Password</label>
-		<input
-			id="password"
-			type="password"
-			name="password"
-			class="form-control"
-			ngModel
-			password
-			required
-			#password="ngModel"
-			/>
-		<p class="form-text text-muted" *ngIf="!password.valid && password.touched">Password is required</p>
-	</div>
-	<div class="form-group">
-		<button [disabled]="loading || !form.valid" class="btn btn-primary">
-			<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-			Login
-		</button>
-		<a routerLink="/register" class="btn btn-link">Register</a>
-	</div>
-</form>
+<div class="col-sm-6 offset-sm-3">
+	<h2>Login</h2>
+	<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+		<div class="form-group">
+			<label for="email">Email</label>
+			<input
+				id="email"
+				type="email"
+				name="email"
+				class="form-control"
+				ngModel
+				email
+				required
+				#email="ngModel"
+				/>
+			<p class="form-text text-muted" *ngIf="!email.valid && email.touched">Email is required</p>
+		</div>
+		<div class="form-group">
+			<label for="password">Password</label>
+			<input
+				id="password"
+				type="password"
+				name="password"
+				class="form-control"
+				ngModel
+				password
+				required
+				#password="ngModel"
+				/>
+			<p class="form-text text-muted" *ngIf="!password.valid && password.touched">Password is required</p>
+		</div>
+		<div class="form-group">
+			<button [disabled]="loading || !form.valid" class="btn btn-primary">
+				<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+				Login
+			</button>
+			<a routerLink="/register" class="btn btn-link">Register</a>
+		</div>
+	</form>
+</div>

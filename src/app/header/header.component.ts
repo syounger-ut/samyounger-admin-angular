@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
 
 // Services
-import { AuthenticationService } from '@root/_services';
+import { AuthenticationService, UserService } from '@root/_services';
 
 // Models
 import { User } from '@root/_models';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,13 +14,20 @@ import { User } from '@root/_models';
 export class HeaderComponent {
   @Input() public user: User;
 
-  constructor(
+  public constructor(
     private authenticationService: AuthenticationService,
-    private router: Router,
+    private userService: UserService,
   ) {}
 
-  logout() {
+  public ngOnInit(): void {
+    this.loggedIn$().subscribe(console.log);
+  }
+
+  public logout() {
     this.authenticationService.logout();
-    this.router.navigate(['/login']);
+  }
+
+  public loggedIn$(): Observable<User> {
+    return this.userService.user$;
   }
 }

@@ -2,6 +2,11 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
   <div class="navbar-nav">
     <a class="nav-item nav-link" routerLink="/">Home</a>
-    <a class="nav-item nav-link" routerLink="/" (click)="logout()">Logout</a>
+    <a
+      *ngIf="loggedIn$() | async"
+      class="nav-item nav-link"
+      routerLink="/"
+      (click)="logout()">
+      Logout</a>
   </div>
 </nav>

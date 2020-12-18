@@ -12,9 +12,12 @@ import { AlertService, AuthenticationService } from '@root/_services';
 })
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm', { static: true }) public form: NgForm;
-  loading = false;
-  submitted = false;
-  returnUrl: string;
+
+  public loading = false;
+
+  public submitted = false;
+
+  private returnUrl: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,12 +27,12 @@ export class LoginComponent implements OnInit {
     private ngZone: NgZone,
   ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     this.submitted = true;
 
     const email = this.form.value.email;
@@ -43,7 +46,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(email, password).subscribe(
+    this.authenticationService.login$(email, password).subscribe(
       _res => {
         this.ngZone.run(() => this.router.navigate([this.returnUrl]));
       },
