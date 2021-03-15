@@ -15,7 +15,9 @@ import { QueryMatch } from 'shallow-render/dist/lib/models/query-match';
 // import { of, Observable } from 'rxjs';
 import { throwError } from 'rxjs';
 
-const routes: Routes = [{ path: 'register', component: class DummyComponent {} }];
+const routes: Routes = [
+  { path: 'register', component: class DummyComponent {} },
+];
 const mockAuthenticationService = MockAuthenticationService();
 const mockAlertService = MockAlertService();
 
@@ -30,7 +32,7 @@ describe('RegisterComponent', () => {
       FormsModule,
       ReactiveFormsModule,
       HttpClientModule,
-      RouterModule.forRoot(routes)
+      RouterModule.forRoot(routes),
     ],
     declarations: [RegisterComponent],
     providers: [
@@ -46,10 +48,7 @@ describe('RegisterComponent', () => {
       RouterModule,
       RouterTestingModule.withRoutes(routes)
     );
-    shallow.dontMock(
-      AuthenticationService,
-      AlertService,
-    );
+    shallow.dontMock(AuthenticationService, AlertService);
   });
 
   afterEach(() => {
@@ -73,12 +72,16 @@ describe('RegisterComponent', () => {
       });
     });
 
-    const fieldValidation = (fieldName: string, falseValue, trueValue: string): void => {
+    const fieldValidation = (
+      fieldName: string,
+      falseValue,
+      trueValue: string
+    ): void => {
       instance.registerForm.controls[fieldName].setValue(falseValue);
       expect(instance.registerForm.valid).toBeFalsy();
       instance.registerForm.controls[fieldName].setValue(trueValue);
       expect(instance.registerForm.valid).toBeTruthy();
-    }
+    };
 
     describe('first_name', () => {
       it('is required', () => {
@@ -88,13 +91,13 @@ describe('RegisterComponent', () => {
 
     describe('last_name', () => {
       it('is required', () => {
-        fieldValidation('last_name', '', 'Foo Bar')
+        fieldValidation('last_name', '', 'Foo Bar');
       });
     });
 
     describe('email', () => {
       it('is required', () => {
-        fieldValidation('email', '', 'foo@bar.com')
+        fieldValidation('email', '', 'foo@bar.com');
       });
 
       it('must be a valid email string', () => {
@@ -104,7 +107,7 @@ describe('RegisterComponent', () => {
 
     describe('password', () => {
       it('is required', () => {
-        fieldValidation('password', '', 'password')
+        fieldValidation('password', '', 'password');
       });
 
       it('must be 6 or more chars', () => {
@@ -143,39 +146,32 @@ describe('RegisterComponent', () => {
 
     it('sends the form to the registerService', () => {
       instance.onSubmit();
-      expect(
-        mockAuthenticationService.register,
-      ).toHaveBeenCalledWith(
-        instance.registerForm.value,
+      expect(mockAuthenticationService.register$).toHaveBeenCalledWith(
+        instance.registerForm.value
       );
     });
 
     describe('on success', () => {
       it('calls the AlertService#success', () => {
         instance.onSubmit();
-        expect(
-          mockAlertService.success,
-        ).toHaveBeenCalledWith(
-          'Registration successful', true,
+        expect(mockAlertService.success).toHaveBeenCalledWith(
+          'Registration successful',
+          true
         );
       });
     });
 
     describe('on error', () => {
-      const error = new Error('Auth Svs Error Msg')
+      const error = new Error('Auth Svs Error Msg');
       beforeEach(() => {
-        jest.spyOn(
-          mockAuthenticationService, 'register',
-        ).mockReturnValue(
-          throwError(error)
-        );
+        jest
+          .spyOn(mockAuthenticationService, 'register$')
+          .mockReturnValue(throwError(error));
       });
 
       it('calls the AlertService#error', () => {
         instance.onSubmit();
-        expect(
-          mockAlertService.error,
-        ).toHaveBeenCalledWith(error);
+        expect(mockAlertService.error).toHaveBeenCalledWith(error);
       });
 
       it('sets loading to false', () => {
@@ -197,7 +193,7 @@ describe('RegisterComponent', () => {
 
       it('does not submit the form', () => {
         instance.onSubmit();
-        expect(mockAuthenticationService.register).toHaveBeenCalledTimes(0);
+        expect(mockAuthenticationService.register$).toHaveBeenCalledTimes(0);
       });
 
       it('does not set loading to true', () => {

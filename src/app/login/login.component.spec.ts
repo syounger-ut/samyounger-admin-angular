@@ -23,11 +23,7 @@ describe('LoginComponent', () => {
   let find: any;
 
   @NgModule({
-    imports: [
-      FormsModule,
-      HttpClientModule,
-      RouterModule.forRoot(routes)
-    ],
+    imports: [FormsModule, HttpClientModule, RouterModule.forRoot(routes)],
     declarations: [LoginComponent],
     providers: [
       { provide: APP_BASE_HREF, useValue: '/' },
@@ -42,10 +38,7 @@ describe('LoginComponent', () => {
       RouterModule,
       RouterTestingModule.withRoutes(routes)
     );
-    shallow.dontMock(
-      AuthenticationService,
-      AlertService,
-    );
+    shallow.dontMock(AuthenticationService, AlertService);
   });
 
   afterEach(() => {
@@ -59,9 +52,12 @@ describe('LoginComponent', () => {
   });
 
   describe('inputs', () => {
-    const detectInputChanges = (inputName: string, expectedValue: string): void => {
+    const detectInputChanges = (
+      inputName: string,
+      expectedValue: string
+    ): void => {
       it(`updates the ${inputName} property when the value changes`, async () => {
-        ({find, instance, fixture } = await shallow.render());
+        ({ find, instance, fixture } = await shallow.render());
         const emailInput = find(`#${inputName}`);
 
         emailInput.nativeElement.value = expectedValue;
@@ -97,7 +93,9 @@ describe('LoginComponent', () => {
       let inputName: string = 'email';
 
       beforeEach(() => {
-        input = fixture.nativeElement.querySelector(`input[name="${inputName}"]`);
+        input = fixture.nativeElement.querySelector(
+          `input[name="${inputName}"]`
+        );
       });
 
       describe('the field is touched', () => {
@@ -107,14 +105,12 @@ describe('LoginComponent', () => {
 
         describe('the email input is invalid', () => {
           beforeEach(() => {
-            input.value = "foo@bar";
+            input.value = 'foo@bar';
             fixture.detectChanges();
           });
 
           it('shows an error message with an invalid email', async () => {
-            expect(
-              fixture.nativeElement.querySelector('p').innerHTML
-            ).toEqual(
+            expect(fixture.nativeElement.querySelector('p').innerHTML).toEqual(
               'Email is required'
             );
           });
@@ -122,16 +118,14 @@ describe('LoginComponent', () => {
 
         describe('no email is entered', () => {
           beforeEach(() => {
-            input.value = "";
+            input.value = '';
             fixture.detectChanges();
           });
 
           it('shows an error message with an empty email', () => {
-            expect(
-              fixture.nativeElement.querySelector('p').innerHTML
-            ).toEqual(
+            expect(fixture.nativeElement.querySelector('p').innerHTML).toEqual(
               'Email is required'
-            )
+            );
           });
         });
       });
@@ -147,7 +141,9 @@ describe('LoginComponent', () => {
       let inputName = 'password';
 
       beforeEach(() => {
-        input = fixture.nativeElement.querySelector(`input[name="${inputName}"]`);
+        input = fixture.nativeElement.querySelector(
+          `input[name="${inputName}"]`
+        );
       });
 
       describe('the password field is not touched', () => {
@@ -163,14 +159,14 @@ describe('LoginComponent', () => {
 
         describe('no password is entered', () => {
           beforeEach(() => {
-            input.value = "";
+            input.value = '';
             fixture.detectChanges();
           });
 
           it('shows an error', () => {
-            expect(
-              fixture.nativeElement.querySelector('p').innerHTML
-            ).toEqual('Password is required');
+            expect(fixture.nativeElement.querySelector('p').innerHTML).toEqual(
+              'Password is required'
+            );
           });
         });
       });
@@ -210,7 +206,7 @@ describe('LoginComponent', () => {
 
       it("doesn't submit the form", () => {
         find('form').triggerEventHandler('submit', {});
-        expect(mockAuthenticationService.login).toHaveBeenCalledTimes(0);
+        expect(mockAuthenticationService.login$).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -220,9 +216,9 @@ describe('LoginComponent', () => {
         formControls['password'].setValue('password');
       });
 
-      it('submits the email and password to the authenticationService', async () => {
+      it.only('submits the email and password to the authenticationService', async () => {
         find('form').triggerEventHandler('submit', {});
-        expect(mockAuthenticationService.login).toHaveBeenCalled();
+        expect(mockAuthenticationService.login$).toHaveBeenCalled();
       });
 
       it('updates the loading value to true', () => {
